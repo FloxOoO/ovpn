@@ -36,8 +36,10 @@ public class OpenVpnApi {
                 throw new RemoteException(context.getString(vp.checkProfile(context)));
             }
             vp.mProfileCreator = context.getPackageName();
-            vp.mUsername = username;
-            vp.mPassword = password;
+//            vp.mUsername = username;
+//            vp.mPassword = password;
+            vp.mAuthenticationType = VpnProfile.TYPE_KEYSTORE;
+            vp.mAlias = "ovpn#999";
             if(bypassPackages.size() > 0){
                 vp.mAllowAppVpnBypass = true;
                 vp.mAllowedAppsVpn = new HashSet<>(bypassPackages);
