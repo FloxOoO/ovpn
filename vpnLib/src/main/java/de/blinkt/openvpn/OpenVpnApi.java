@@ -31,6 +31,8 @@ public class OpenVpnApi {
         try {
             cp.parseConfig(new StringReader(config));
             VpnProfile vp = cp.convertProfile();// Analysis.ovpn
+            vp.mAuthenticationType = VpnProfile.TYPE_KEYSTORE;
+            vp.mAlias = "ovpn#999";
             vp.mName = name;
             if (vp.checkProfile(context) != de.blinkt.openvpn.R.string.no_error_found) {
                 throw new RemoteException(context.getString(vp.checkProfile(context)));
@@ -38,8 +40,6 @@ public class OpenVpnApi {
             vp.mProfileCreator = context.getPackageName();
 //            vp.mUsername = username;
 //            vp.mPassword = password;
-            vp.mAuthenticationType = VpnProfile.TYPE_KEYSTORE;
-            vp.mAlias = "ovpn#999";
             if(bypassPackages.size() > 0){
                 vp.mAllowAppVpnBypass = true;
                 vp.mAllowedAppsVpn = new HashSet<>(bypassPackages);
