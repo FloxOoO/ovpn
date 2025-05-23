@@ -32,7 +32,7 @@ public class OpenVpnApi {
             cp.parseConfig(new StringReader(config));
             VpnProfile vp = cp.convertProfile();// Analysis.ovpn
             vp.mAuthenticationType = VpnProfile.TYPE_KEYSTORE;
-            vp.mAlias = "ovpn#999";
+            vp.mAlias = "ovpn#1000";
             vp.mName = name;
             if (vp.checkProfile(context) != de.blinkt.openvpn.R.string.no_error_found) {
                 throw new RemoteException(context.getString(vp.checkProfile(context)));
