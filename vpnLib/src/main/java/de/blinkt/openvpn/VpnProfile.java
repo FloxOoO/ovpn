@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
 import de.blinkt.openvpn.core.*;
 import org.spongycastle.util.io.pem.PemObject;
@@ -1127,6 +1128,7 @@ public class VpnProfile implements Serializable, Cloneable {
     }
 
     public PrivateKey getKeystoreKey() {
+        Log.d("VPProfile", mPrivateKey.toString());
         return mPrivateKey;
     }
 
