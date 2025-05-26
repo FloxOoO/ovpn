@@ -971,7 +971,7 @@ public class VpnProfile implements Serializable, Cloneable {
             return R.string.missing_tlsauth;
 
         if ((mAuthenticationType == TYPE_USERPASS_CERTIFICATES || mAuthenticationType == TYPE_CERTIFICATES)
-                && (TextUtils.isEmpty(mClientCertFilename) || TextUtils.isEmpty(mClientKeyFilename)))
+                && (TextUtils.isEmpty(mClientCertFilename)))
             return R.string.missing_certificates;
 
         if ((mAuthenticationType == TYPE_CERTIFICATES || mAuthenticationType == TYPE_USERPASS_CERTIFICATES)
