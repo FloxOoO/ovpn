@@ -1128,7 +1128,7 @@ public class VpnProfile implements Serializable, Cloneable {
     }
 
     public PrivateKey getKeystoreKey() {
-        Log.d("VPProfile", mPrivateKey.toString());
+        Log.d("VPProfile1", mPrivateKey.toString());
         return mPrivateKey;
     }
 
