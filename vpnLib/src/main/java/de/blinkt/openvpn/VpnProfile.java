@@ -1134,12 +1134,15 @@ public class VpnProfile implements Serializable, Cloneable {
 
     @Nullable
     public String getSignedData(Context c, String b64data, boolean pkcs1padding) {
+        Log.d("VPNPROFILE", "getSignedData");
         byte[] data = Base64.decode(b64data, Base64.DEFAULT);
         byte[] signed_bytes;
         if (mAuthenticationType == TYPE_EXTERNAL_APP)
             signed_bytes = getExtAppSignedData(c, data);
-        else
+        else {
+            Log.d("VPNPROFILE", "mAuthenticationType != TYPE_EXTERNAL_APP");
             signed_bytes = getKeyChainSignedData(data, pkcs1padding);
+        }
 
         if (signed_bytes != null)
             return Base64.encodeToString(signed_bytes, Base64.NO_WRAP);

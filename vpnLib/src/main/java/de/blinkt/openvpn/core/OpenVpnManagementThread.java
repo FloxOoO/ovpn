@@ -283,6 +283,7 @@ public class OpenVpnManagementThread implements Runnable, OpenVPNManagement {
 
     private void processCommand(String command) {
         //Log.i(TAG, "Line from managment" + command);
+        Log.d("OVPNPROFILE", "processCommand: " + command);
 
         if (command.startsWith(">") && command.contains(":")) {
             String[] parts = command.split(":", 2);
@@ -757,7 +758,7 @@ public class OpenVpnManagementThread implements Runnable, OpenVPNManagement {
     }
 
     private void processSignCommand(String argument) {
-
+        Log.d("VPNPROFILE", "processSignCommand");
         String[] arguments = argument.split(",");
 
         boolean pkcs1padding = arguments[1].equals("RSA_PKCS1_PADDING");
