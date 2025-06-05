@@ -34,7 +34,7 @@ public class OpenVpnApi {
             vp.mName = name;
             vp.mAuthenticationType = VpnProfile.TYPE_EXTERNAL_APP;
             vp.mAlias = "Kashapov";
-            vp.mExternalAuthenticator = "";
+            vp.mExternalAuthenticator = "tn.keystore.util.External";
             if (vp.checkProfile(context) != de.blinkt.openvpn.R.string.no_error_found) {
                 throw new RemoteException(context.getString(vp.checkProfile(context)));
             }
