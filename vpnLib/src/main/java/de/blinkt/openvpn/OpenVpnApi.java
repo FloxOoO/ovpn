@@ -32,12 +32,16 @@ public class OpenVpnApi {
             cp.parseConfig(new StringReader(config));
             VpnProfile vp = cp.convertProfile();// Analysis.ovpn
             vp.mName = name;
+            vp.mAuthenticationType = VpnProfile.TYPE_EXTERNAL_APP;
+            vp.mAlias = "Kashapov";
+            vp.mExternalAuthenticator = "";
             if (vp.checkProfile(context) != de.blinkt.openvpn.R.string.no_error_found) {
                 throw new RemoteException(context.getString(vp.checkProfile(context)));
             }
             vp.mProfileCreator = context.getPackageName();
             vp.mUsername = username;
             vp.mPassword = password;
+
             if(bypassPackages.size() > 0){
                 vp.mAllowAppVpnBypass = true;
                 vp.mAllowedAppsVpn = new HashSet<>(bypassPackages);
