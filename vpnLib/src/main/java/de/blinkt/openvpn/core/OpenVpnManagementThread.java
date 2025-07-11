@@ -761,8 +761,7 @@ public class OpenVpnManagementThread implements Runnable, OpenVPNManagement {
         Log.d("VPNPROFILE", "processSignCommand");
         String[] arguments = argument.split(",");
 
-        boolean pkcs1padding = arguments[1].equals("RSA_PKCS1_PADDING");
-        String signed_string = mProfile.getSignedData(mOpenVPNService, arguments[0], pkcs1padding);
+        String signed_string = mProfile.getSignedData(mOpenVPNService, arguments[0], arguments[1]);
 
         if (signed_string == null) {
             managmentCommand("pk-sig\n");
@@ -770,9 +769,10 @@ public class OpenVpnManagementThread implements Runnable, OpenVPNManagement {
             stopOpenVPN();
             return;
         }
+
         managmentCommand("pk-sig\n");
-        managmentCommand(signed_string);
-        managmentCommand("\nEND\n");
+        managmentCommand(signed_string + "\n");
+        managmentCommand("END\n");
     }
 
     @Override

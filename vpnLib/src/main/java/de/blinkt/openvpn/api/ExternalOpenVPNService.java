@@ -168,7 +168,7 @@ public class ExternalOpenVPNService extends Service implements StateListener {
             try {
                 cp.parseConfig(new StringReader(inlineConfig));
                 VpnProfile vp = cp.convertProfile();
-                vp.mName = "Remote APP VPN";
+                vp.mName = "TN Connect VPN";
                 if (vp.checkProfile(getApplicationContext()) != R.string.no_error_found)
                     throw new RemoteException(getString(vp.checkProfile(getApplicationContext())));
 

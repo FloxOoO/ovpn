@@ -22,20 +22,23 @@ public class OpenVpnApi {
     private static final String TAG = "OpenVpnApi";
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
-    public static void startVpn(Context context, String config, String name, String username, String password, List<String> bypassPackages) throws RemoteException {
-        if (TextUtils.isEmpty(config)) throw new RemoteException("config is empty");
+    public static void startVpn(Context context, String config, String name, String username, String password,
+            List<String> bypassPackages) throws RemoteException {
+        if (TextUtils.isEmpty(config))
+            throw new RemoteException("config is empty");
         startVpnInternal(context, config, name, username, password, bypassPackages);
     }
 
-    static void startVpnInternal(Context context, String config, String name, String username, String password, List<String> bypassPackages) throws RemoteException {
+    static void startVpnInternal(Context context, String config, String name, String username, String password,
+            List<String> bypassPackages) throws RemoteException {
         ConfigParser cp = new ConfigParser();
         try {
             cp.parseConfig(new StringReader(config));
             VpnProfile vp = cp.convertProfile();// Analysis.ovpn
             vp.mName = name;
             vp.mAuthenticationType = VpnProfile.TYPE_EXTERNAL_APP;
-            vp.mAlias = "Kashapov";
-            vp.mExternalAuthenticator = "de.blinkt.externalcertprovider";
+            vp.mExpectTLSCert = true;
+            vp.mAlias = "kolyan_krasava2";
             if (vp.checkProfile(context) != de.blinkt.openvpn.R.string.no_error_found) {
                 throw new RemoteException(context.getString(vp.checkProfile(context)));
             }
@@ -43,7 +46,7 @@ public class OpenVpnApi {
             vp.mUsername = username;
             vp.mPassword = password;
 
-            if(bypassPackages.size() > 0){
+            if (bypassPackages.size() > 0) {
                 vp.mAllowAppVpnBypass = true;
                 vp.mAllowedAppsVpn = new HashSet<>(bypassPackages);
             }

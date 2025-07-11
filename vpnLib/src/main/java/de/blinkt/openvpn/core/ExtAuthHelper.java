@@ -19,6 +19,7 @@ import androidx.annotation.WorkerThread;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.util.Log;
 import de.blinkt.openvpn.api.ExternalCertificateProvider;
 
 import java.io.ByteArrayInputStream;
@@ -27,6 +28,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.KeyStore;
+import java.security.Signature;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -109,17 +112,28 @@ public class ExtAuthHelper {
                                   @NonNull String extAuthPackageName,
                                   @NonNull String alias,
                                   @NonNull byte[] data
-    ) throws KeyChainException, InterruptedException
+    )
 
     {
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
 
+            KeyStore.PrivateKeyEntry privateKey = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, null);
+            if (privateKey == null) {
+                throw new SecurityException("Key not found in AndroidKeyStore");
+            }
 
-        try (ExternalAuthProviderConnection authProviderConnection = bindToExtAuthProvider(context.getApplicationContext(), extAuthPackageName)) {
-            ExternalCertificateProvider externalAuthProvider = authProviderConnection.getService();
-            return externalAuthProvider.getSignedData(alias, data);
+            Signature signature = Signature.getInstance("NONEwithECDSA"); 
+            signature.initSign(privateKey.getPrivateKey());
+            signature.update(data);
 
-        } catch (RemoteException e) {
-            throw new KeyChainException(e);
+            return signature.sign();
+        } 
+        catch(Exception e) 
+        {
+            Log.d("signData", "exception: " + e.getMessage());
+            return null;
         }
     }
 

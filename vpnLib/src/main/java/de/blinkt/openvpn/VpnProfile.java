@@ -449,20 +449,9 @@ public class VpnProfile implements Serializable, Cloneable {
             case VpnProfile.TYPE_KEYSTORE:
             case VpnProfile.TYPE_EXTERNAL_APP:
                 if (!configForOvpn3) {
-                    String[] ks = getExternalCertificates(context);
-                    cfg.append("### From Keystore/ext auth app ####\n");
-                    if (ks != null) {
-                        cfg.append("<ca>\n").append(ks[0]).append("\n</ca>\n");
-                        if (!TextUtils.isEmpty(ks[1]))
-                            cfg.append("<extra-certs>\n").append(ks[1]).append("\n</extra-certs>\n");
-                        cfg.append("<cert>\n").append(ks[2]).append("\n</cert>\n");
-                        cfg.append("management-external-key nopadding\n");
-                    } else {
-                        cfg.append(context.getString(R.string.keychain_access)).append("\n");
-                        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN)
-                            if (!mAlias.matches("^[a-zA-Z0-9]$"))
-                                cfg.append(context.getString(R.string.jelly_keystore_alphanumeric_bug)).append("\n");
-                    }
+                    cfg.append("<ca>\n").append(this.mCaFilename.replace(INLINE_TAG, "")).append("\n</ca>\n");
+                    cfg.append("<cert>\n").append(this.mClientCertFilename.replace(INLINE_TAG, "")).append("\n</cert>\n");
+                    cfg.append("management-external-key nopadding\n");
                 }
                 break;
             case VpnProfile.TYPE_USERPASS:
@@ -661,7 +650,6 @@ public class VpnProfile implements Serializable, Cloneable {
                 }
             }
         }
-
 
         return cfg.toString();
     }
@@ -1133,29 +1121,34 @@ public class VpnProfile implements Serializable, Cloneable {
     }
 
     @Nullable
-    public String getSignedData(Context c, String b64data, boolean pkcs1padding) {
+    public String getSignedData(Context c, String b64data, String algo) {
         Log.d("VPNPROFILE", "getSignedData");
         byte[] data = Base64.decode(b64data, Base64.DEFAULT);
         byte[] signed_bytes;
         if (mAuthenticationType == TYPE_EXTERNAL_APP)
-            signed_bytes = getExtAppSignedData(c, data);
+            signed_bytes = getExtAppSignedData(c, data, algo);
         else {
             Log.d("VPNPROFILE", "mAuthenticationType != TYPE_EXTERNAL_APP");
-            signed_bytes = getKeyChainSignedData(data, pkcs1padding);
+            signed_bytes = getKeyChainSignedData(data, true);
         }
 
-        if (signed_bytes != null)
+        if (signed_bytes != null) {
+            Log.d("VPNPROFILE", "signed_bytes != null");
             return Base64.encodeToString(signed_bytes, Base64.NO_WRAP);
+        }
         else
             return null;
     }
 
-    private byte[] getExtAppSignedData(Context c, byte[] data) {
-        if (TextUtils.isEmpty(mExternalAuthenticator))
-            return null;
+    @Nullable
+    public byte[] getSignedDataBytes(Context c, String b64data, String algo) {
+        return getSignedData(c, b64data, algo).getBytes();
+    }
+
+    private byte[] getExtAppSignedData(Context c, byte[] data, String algo) {
         try {
-            return ExtAuthHelper.signData(c, mExternalAuthenticator, mAlias, data);
-        } catch (KeyChainException | InterruptedException e) {
+            return ExtAuthHelper.signData(c, mClientCertFilename, mAlias, data);
+        } catch(Exception e) {
             VpnStatus.logError(R.string.error_extapp_sign, mExternalAuthenticator, e.getClass().toString(), e.getLocalizedMessage());
             return null;
         }
