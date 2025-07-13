@@ -15,7 +15,6 @@ import java.util.List;
 import de.blinkt.openvpn.core.ConfigParser;
 import de.blinkt.openvpn.core.ProfileManager;
 import de.blinkt.openvpn.core.VPNLaunchHelper;
-import tn.keystore.util.External;
 
 public class OpenVpnApi {
 
@@ -38,7 +37,7 @@ public class OpenVpnApi {
             vp.mName = name;
             vp.mAuthenticationType = VpnProfile.TYPE_EXTERNAL_APP;
             vp.mExpectTLSCert = true;
-            vp.mAlias = "kolyan_krasava2";
+            vp.mAlias = "tn_connect_hardware_key_for_vpn";
             if (vp.checkProfile(context) != de.blinkt.openvpn.R.string.no_error_found) {
                 throw new RemoteException(context.getString(vp.checkProfile(context)));
             }
